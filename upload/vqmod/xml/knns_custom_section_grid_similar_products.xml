@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification
+	xmlns="https://github.com/vqmod/vqmod"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://github.com/vqmod/vqmod https://raw.githubusercontent.com/vqmod/vqmod/master/vqmod.xsd"
+	>
+	<id><![CDATA[[VQMOD] Custom (Custom Section Grid) Similar Products]]></id>
+	<version>0.1.0</version>
+	<vqmver>2.6.3</vqmver>
+	<author>kanenas.net (aka Nikolas Branis) - nbran@kanenas.net</author>
+	<file path="catalog/controller/module/" name="similar_products.php" error="log">
+		<operation error="skip">
+			<search position="after"><![CDATA['name'       => $result['name'],]]></search>
+			<add><![CDATA[				'model'        => $result['model'],]]></add>
+		</operation>
+	</file>
+	<file path="catalog/view/theme/default/template/module/" name="similar_products.tpl" error="log">
+		<operation error="skip">
+			<search position="replace"><![CDATA[<h3><?php echo $heading_title; ?></h3>]]></search>
+			<add><![CDATA[
+<div class="box custom-sections section-product single-section">
+  <div class="box-heading box-sections box-block">
+    <ul>
+      <li><a href="javascript:;"><?php echo $heading_title; ?></a></li>
+    </ul>
+  </div>
+</div>
+			]]></add>
+		</operation>
+		<operation error="skip">
+			<search position="replace"><![CDATA[<style scoped type="text/css">.sp-l,.sp-o{background-color:#fff}.sp-c{position:relative;width:100%;overflow:hidden}.sp-o-c{width:100%;height:100%;position:absolute;top:0;left:0;z-index:1000;display:none}.sp-o{width:100%;height:100%;position:absolute;top:0;left:0;color:#ccc;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:nowrap;-ms-flex-wrap:nowrap;flex-wrap:nowrap;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-align-content:stretch;-ms-flex-line-pack:stretch;align-content:stretch;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.sp-ul{z-index:999}.sp-ll{z-index:998}.sp-o .fa{font-size:48px}</style>]]></search>
+			<add><![CDATA[
+	<style scoped type="text/css">.sp-l,.sp-o{background-color:transparent}.sp-c{position:relative;width:100%;overflow:hidden}.sp-o-c{width:100%;height:100%;position:absolute;top:0;left:0;z-index:1000;display:none}.sp-o{width:100%;height:100%;position:absolute;top:0;left:0;color:#ccc;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:nowrap;-ms-flex-wrap:nowrap;flex-wrap:nowrap;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-align-content:stretch;-ms-flex-line-pack:stretch;align-content:stretch;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.sp-ul{z-index:999}.sp-ll{z-index:998}.sp-o .fa{font-size:48px}</style>
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/view/theme/default/template/module/" name="similar_products_products.tpl" error="log">
+		<operation error="skip">
+			<search position="replace" offset="79"><![CDATA[<div class="row product-layout">]]></search>
+			<add><![CDATA[
+    <div class="box-content">
+        <div class="product-grid">
+            <?php foreach ($products as $product) { ?>
+            <div class="product-grid-item xs-100 sm-50 md-33 lg-25 xl-25">
+                <div class="product-wrapper">
+                    <?php if (isset($product['thumb'])) { ?>
+                    <div class="image <?php echo $this->journal2->settings->get('show_countdown', 'never') !== 'never' && isset($product['date_end']) && $product['date_end'] ? 'has-countdown' : ''; ?>">
+                        <a href="<?php echo $product['href']; ?>" <?php if(isset($product['thumb2']) && $product['thumb2']): ?> class="has-second-image" style="background: url('<?php echo $product['thumb2']; ?>') no-repeat;" <?php else: endif; ?>>
+                            <img class="first-image" width="273" height="273" src="<?php echo $product['thumb']; ?>" title="<?php echo $product['name']; ?>" alt="<?php echo $product['name']; ?>" />
+                        </a>
+                        <?php if($this->journal2->settings->get('product_grid_wishlist_icon_position') === 'image' && $this->journal2->settings->get('product_grid_wishlist_icon_display', '') === 'icon'): ?>
+                            <div class="wishlist"><a onclick="addToWishList('<?php echo $product['product_id']; ?>');" class="hint--top" data-hint="<?php echo $button_wishlist; ?>"><i class="wishlist-icon"></i><span class="button-wishlist-text"><?php echo $button_wishlist;?></span></a></div>
+                            <div class="compare"><a onclick="addToCompare('<?php echo $product['product_id']; ?>');" class="hint--top" data-hint="<?php echo $button_compare; ?>"><i class="compare-icon"></i><span class="button-compare-text"><?php echo $button_compare;?></span></a></div>
+                        <?php endif; ?>
+                    </div>
+                    <?php } ?>
+                    <div class="product-details">
+                        <div class="caption">
+                        <div class="name"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></div>
+                        <span class="knns-model"><?php echo 'ΚΩΔΙΚΟΣ: '.$product['model']; ?></span>
+                        <div class="description"><?php echo $product['description']; ?></div>
+                        <?php if ($product['price']) { ?>
+                        <div class="price">
+                            <?php if (!$product['special']) { ?>
+                            <?php echo $product['price']; ?>
+                            <?php } else { ?>
+                            <span class="price-old"><?php echo $product['price']; ?></span> <span class="price-new" <?php echo isset($product['date_end']) && $product['date_end'] ? "data-end-date='{$product['date_end']}'" : ""; ?>><?php echo $product['special']; ?></span>
+                            <?php } ?>
+                            <?php if ($product['tax']) { ?>
+                            <hr>
+                            <span class="price-tax"><?php echo $text_tax; ?> <?php echo $product['tax']; ?></span>
+                            <?php } ?>
+                        </div>
+                        <?php } ?>
+                        <?php if ($product['rating']) { ?>
+                        <div class="rating">
+                            <?php for ($i = 1; $i <= 5; $i++) { ?>
+                            <?php if ($product['rating'] < $i) { ?>
+                            <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+                            <?php } else { ?>
+                            <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+                            <?php } ?>
+                            <?php } ?>
+                        </div>
+                        <?php } ?>
+                        </div>
+                        <div class="button-group">
+                        <?php if (Journal2Utils::isEnquiryProduct($this, $product)): ?>
+                        <div class="cart enquiry-button">
+                            <a href="javascript:Journal.openPopup('<?php echo $this->journal2->settings->get('enquiry_popup_code'); ?>', '<?php echo $product['product_id']; ?>');" data-clk="addToCart('<?php echo $product['product_id']; ?>');" class="button hint--top" data-hint="<?php echo $this->journal2->settings->get('enquiry_button_text'); ?>"><?php echo $this->journal2->settings->get('enquiry_button_icon') . '<span class="button-cart-text">' . $this->journal2->settings->get('enquiry_button_text') . '</span>'; ?></a>
+                        </div>
+                        <?php else: ?>
+                        <div class="cart <?php echo isset($product['labels']) && is_array($product['labels']) && isset($product['labels']['outofstock']) ? 'outofstock' : ''; ?>">
+                            <a onclick="addToCart('<?php echo $product['product_id']; ?>');" class="button hint--top" data-hint="<?php echo $button_cart; ?>"><i class="button-left-icon"></i><span class="button-cart-text"><?php echo $button_cart; ?></span><i class="button-right-icon"></i></a>
+                        </div>
+                        <?php endif; ?>
+                        <div class="wishlist"><a onclick="addToWishList('<?php echo $product['product_id']; ?>');" class="hint--top" data-hint="<?php echo $button_wishlist; ?>"><i class="wishlist-icon"></i><span class="button-wishlist-text"><?php echo $button_wishlist;?></span></a></div>
+                        <div class="compare"><a onclick="addToCompare('<?php echo $product['product_id']; ?>');" class="hint--top" data-hint="<?php echo $button_compare; ?>"><i class="compare-icon"></i><span class="button-compare-text"><?php echo $button_compare;?></span></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+    </div>
+			]]></add>
+		</operation>
+	</file>
+</modification>
