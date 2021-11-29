@@ -17,7 +17,11 @@
 	<file path="catalog/controller/module/" name="similar_products.php" error="log">
 		<operation error="skip">
 			<search position="after"><![CDATA['name'       => $result['name'],]]></search>
-			<add><![CDATA[				'model'        => $result['model'],]]></add>
+			<add><![CDATA[
+				'model'             => $result['model'],
+				'manufacturer'      => $result['manufacturer'],
+				'manufacturer_href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $result['manufacturer_id']),
+				]]></add>
 		</operation>
 	</file>
 	<file path="catalog/view/theme/default/template/module/" name="similar_products.tpl" error="log">
@@ -62,7 +66,12 @@
                     <?php } ?>
                     <div class="product-details">
                         <div class="caption">
-                        <div class="name"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></div>
+			<?php if ($product['manufacturer'] != '') { ?>
+			  <div class="knns-manufacturer">
+				<a href="<?php echo $product['manufacturer_href']; ?>" title="<?php echo $product['manufacturer']; ?>"><?php echo $product['manufacturer']; ?></a>
+			  </div>
+			<?php }?>
+			<div class="name"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></div>
                         <span class="knns-model"><?php echo 'ΚΩΔΙΚΟΣ: '.$product['model']; ?></span>
                         <div class="description"><?php echo $product['description']; ?></div>
                         <?php if ($product['price']) { ?>
